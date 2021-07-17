@@ -21,16 +21,30 @@
             <button id="btnHourly" class="btn btn-success col-3">hourly</button>
             <button id="btnDayli" class="btn btn-secondary col-3">dayly</button>
         </nav>
-        <header class="w-100 text-center my-5">
-            <input id="citySearch" type="text" placeholder="Serach city">
+        <header class="w-100 text-center py-5">
+            <input id="citySearch" type="text" placeholder="Serach city"><i id="myLocation"
+                class="fas fa-location-arrow fa-2x"></i>
         </header>
-        <article class="main-view flex-grow-1 w-100">
-
+        <article class="main w-100">
             <div class="current">
-                <div class="singleResult">
-                    <h2>31C&deg;</h2>
+                <div class="singleResult d-flex flex-column justify-content-center">
+                    <h2>31C&deg;<img src="http://openweathermap.org/img/wn/10d@2x.png" alt=""></h2>
                     <h4><span class="day">31C&deg;</span>/<span class="night">17C&deg;</span> </h4>
-
+                    <p>My time: 15:12:47</p>
+                    <p>Tokio time: 22:12:47</p>
+                </div>
+                <div class="details row justify-content-between align-items-center">
+                    <ul class="col-6">
+                        <li>Feels like: 27.73C°</li>
+                        <li>Pressure: 1027hPa</li>
+                        <li>Humidity: 52%</li>
+                    </ul>
+                    <ul class="col-6">
+                        <li>Wind speed: 27.73C°</li>
+                        <li>Wind direction: 1027hPa</li>
+                        <li>Sunrise: 52%</li>
+                        <li>Sunset: 52%</li>
+                    </ul>
                 </div>
                 <div class="hourly"></div>
                 <div class="dayli"></div>

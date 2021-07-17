@@ -5,6 +5,10 @@
           box-sizing: border-box;
 }
 
+ul {
+  list-style: none;
+}
+
 body {
   background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.3)), to(rgba(0, 0, 0, 0.3))), url(../img/main-bg.jpg);
   background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/main-bg.jpg);
@@ -23,10 +27,16 @@ body {
   border: 1px solid #ddd;
   margin: 0 auto;
   height: 90vh;
+  padding: 0 10px;
 }
 
 .container nav {
   top: 0;
+}
+
+.container header {
+  height: 20%;
+  border-bottom: 1px solid #ddd;
 }
 
 .container header input {
@@ -42,6 +52,52 @@ body {
   text-shadow: 0 0 3px black;
   border-radius: 5px;
   border-bottom: 4px solid lightgray;
+}
+
+.container .main {
+  height: 80%;
+}
+
+.container .main .current {
+  height: 100%;
+}
+
+.container .main .current .singleResult {
+  height: 50%;
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+}
+
+.container .main .current .singleResult p {
+  text-align: center;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.container .main .current .singleResult h4 {
+  font-size: 2rem;
+  text-align: center;
+}
+
+.container .main .current .singleResult h4 .day {
+  color: yellow;
+}
+
+.container .main .current .singleResult h4 .night {
+  color: #272424;
+}
+
+.container .main .details {
+  height: 50%;
+  width: 100%;
+}
+
+.container .main .details ul li {
+  text-align: center;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: white;
+  font-weight: 500;
 }
 
 .current {
@@ -68,17 +124,5 @@ body {
   color: white;
   text-shadow: 0 0 3px black;
   margin-bottom: 10px;
-}
-
-.current h4 {
-  font-size: 2rem;
-}
-
-.current h4 .day {
-  color: yellow;
-}
-
-.current h4 .night {
-  color: #474242;
 }
 /*# sourceMappingURL=main.css.map */

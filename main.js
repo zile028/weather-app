@@ -1,22 +1,49 @@
-/* selector */
-let city = document.getElementById("citySearch");
-let singleResult = document.querySelector(".singleResult");
-let btnToDay = document.getElementById("btnToDay");
-let btnHourly = document.getElementById("btnHourly");
-let currentResult = [];
-let hourlyWeeklyResult = [];
 // let urlWeatherCurrent = `https://api.openweathermap.org/data/2.5/weather?q={city name}&appid=92fe8ed71d6c96ecf7fa577cadb248f5`;
 // let urlWeatherCurrent = `https://api.openweathermap.org/data/2.5/weather?q=beograd&appid=92fe8ed71d6c96ecf7fa577cadb248f5`;
+/* 
+https://locationiq.com
+https://us1.locationiq.com/v1/reverse.php?key=pk.70d9619acb05266ad971e957f023fea1&lat=42.894453239952774&lon=20.869329696608226&format=json
+*/
 
-let urlWeatherOneCall = `https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&appid=92fe8ed71d6c96ecf7fa577cadb248f5`;
+/* selector */
+let city = document.getElementById("citySearch");
+let btnMyLocation = document.getElementById("myLocation");
+let toDayResult = document.querySelector(".current");
+// let singleDetail = toDayResult.querySelector(".details");
+let btnToDay = document.getElementById("btnToDay");
+let btnHourly = document.getElementById("btnHourly");
+let myPosition = {};
+let cityName = "";
+let currentResult = [];
+let hourlyWeeklyResult = [];
 
+function getMyLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+    console.log("Geolocation is not supported by this browser.");
+  }
+}
+function showPosition(position) {
+  myPosition = {
+    lat: position.coords.latitude,
+    log: position.coords.longitude,
+  };
+  console.log(myPosition);
+}
+
+btnMyLocation.addEventListener("click", getMyLocation);
 btnToDay.addEventListener("click", toDayWeather);
-btnHourly.addEventListener("click", toHourlyWeather);
+// btnHourly.addEventListener("click", toHourlyWeather);
 city.addEventListener("keyup", autoComplite);
 city.addEventListener("focusout", findCity);
 
 function toDayWeather() {
-  currentDay(city.value);
+  cityName = city.value;
+  currentDay(cityName);
+  cityName = cityName.toLowerCase();
+  cityName = cityName.charAt(0).toUpperCase() + cityName.slice(1);
+  city.value = cityName;
 }
 
 function autoComplite(e) {
@@ -51,97 +78,67 @@ function hourlyWeekly(lat, lon) {
   xml.send();
 }
 
-/* 
-function hourly(lat, lon) {
-  let url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,daily&appid=92fe8ed71d6c96ecf7fa577cadb248f5&units=metric&lang=sr`;
-  let xml = new XMLHttpRequest();
-  xml.open("GET", url);
-  xml.onreadystatechange = function () {
-    if (xml.readyState === 4 && xml.status === 200) {
-      let datas = JSON.parse(xml.response);
-      console.log(JSON.parse(xml.response));
-      let dt = datas["hourly"][12]["dt"];
-      console.log(dt);
-      let date = new Date(dt * 1000);
-      console.log(date.getHours());
-    }
-  };
-  xml.send();
-} */
-function getResult(mode, data) {
-  dataResult = data;
-  if (mode === current) {
-  }
-}
-function currentTemp() {
-  // dataResult = sendRequest("current");
-  // console.log(dataResult);
-}
-
+/******************************************************
+TO DAY WEATHER 
+*******************************************************/
 function displaySingleresult(data) {
-  let temp = Math.round(data["main"]["temp"]);
-  let tempMax = Math.round(data["main"]["temp_max"]);
-  let tempMin = Math.round(data["main"]["temp_min"]);
-  let text = `
-  <h2>${temp}C&deg;</h2>
-  <h4>
-      <span class="day">${tempMax}C&deg;</span>/
-      <span class="night">${tempMin}C&deg;</span>
-  </h4>
-`;
-  singleResult.innerHTML = text;
+  let mainData = data["main"];
+  let wind = data["wind"];
+  let sys = data["sys"];
+  let temp = Math.round(mainData["temp"]);
+  let tempMax = Math.round(mainData["temp_max"]);
+  let tempMin = Math.round(mainData["temp_min"]);
+  let times = new CurrentTime();
+  let sunrise = utcToLocalTime(sys["sunrise"]);
+  let sunset = utcToLocalTime(sys["sunset"]);
+  let text = `<div class="singleResult d-flex flex-column justify-content-center">`;
+  text += `<h2>${temp}C&deg;<img src="http://openweathermap.org/img/wn/${data["weather"]["0"]["icon"]}@2x.png" alt=""></h2>`;
+  text += `<h4><span class="day">${tempMax}C&deg;</span>/<span class="night">${tempMin}C&deg;</span></h4>`;
+  text += `<p>My time: ${times.times.myTime}</p>`;
+  text += `<p>${cityName} time: ${times.times.cityTime}</p>`;
+  text += `</div>`; //end singleResult
+  text += `<div class="details row justify-content-between align-items-center">`;
+  text += `<ul class="col-6">`;
+  text += `<li>Feels like: ${mainData["feels_like"]}C&deg</li>`;
+  text += `<li>Pressure: ${mainData["pressure"]}hPa</li>`;
+  text += `<li>Humidity: ${mainData["humidity"]}%</li>`;
+  text += `<li>Visibility: ${data["visibility"]}m</li>`;
+  text += `</ul>`;
+  text += `<ul class="col-6">`;
+  text += `<li>Wind speed: ${wind["speed"]}m/s</li>`;
+  text += `<li>Wind direction: ${wind["deg"]}&deg</li>`;
+  text += `<li>Sunrise: ${sunrise}h</li>`;
+  text += `<li>Sunset: ${sunset}h</li>`;
+  text += `</ul>`;
 
-  let dt = data["dt"];
-  // console.log(dt);
-  // let utcDate = new Date(dt * 1000);
-  // console.log(utcDate.getHours() + ":" + utcDate.getMinutes());
+  text += `</div>`; //end details
 
-  let unix_timestamp = dt;
-  // Create a new JavaScript Date object based on the timestamp
-  // multiplied by 1000 so that the argument is in milliseconds, not seconds.
-  let date = new Date(unix_timestamp * 1000);
-  // Hours part from the timestamp
-  let hours = date.getHours();
-  // Minutes part from the timestamp
-  let minutes = "0" + date.getMinutes();
-  // Seconds part from the timestamp
-  let seconds = "0" + date.getSeconds();
+  toDayResult.innerHTML = text;
 
-  // Will display time in 10:30:23 format
-  let formattedTime =
-    hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
-
-  console.log(formattedTime);
+  getLocation();
 
   let lat = data["coord"]["lat"];
   let lon = data["coord"]["lon"];
   // hourly(lat, lon);
 }
 
-function FormatTime(timeStamp) {
-  this.ts = timeStamp;
-  this.date = new Date(this.ts * 1000);
-  this.hours = this.date.getHours;
-  this.minutes = this.date.getMinutes;
-  this.hours = this.date.getHours;
-  this.hours = this.date.getHours;
+function utcToLocalTime(ts) {
+  let date = new Date(ts * 1000);
+  let hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+  let minutes =
+    date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+  let formattedTime = hours + ":" + minutes;
+  return formattedTime;
 }
 
-function toHourlyWeather() {
-  let unix_timestamp = 1626512243;
-  // Create a new JavaScript Date object based on the timestamp
-  // multiplied by 1000 so that the argument is in milliseconds, not seconds.
-  var date = new Date(unix_timestamp * 1000);
-  // Hours part from the timestamp
-  var hours = date.getHours();
-  // Minutes part from the timestamp
-  var minutes = date.getMinutes();
-  // Seconds part from the timestamp
-  var seconds = date.getSeconds();
-
-  // Will display time in 10:30:23 format
-  var formattedTime =
-    hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
-
-  console.log(formattedTime);
+function CurrentTime() {
+  this.date = new Date();
+  this.myTimeZone = this.date.getTimezoneOffset() * 60;
+  this.cityTimeZone = currentResult["timezone"];
+  this.diference = (this.cityTimeZone + this.myTimeZone) / 3600;
+  this.times = {
+    myTime: this.date.toLocaleTimeString().slice(0, -3),
+    cityTime:
+      this.date.getHours() + this.diference + ":" + this.date.getMinutes(),
+  };
 }
