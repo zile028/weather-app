@@ -34,6 +34,11 @@ body {
   top: 0;
 }
 
+.container nav button {
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
 .container header {
   height: 20%;
   border-bottom: 1px solid #ddd;
@@ -63,6 +68,7 @@ body {
 }
 
 .container .main .current .singleResult {
+  display: none !important;
   height: 50%;
   width: 100%;
   border-bottom: 1px solid #ddd;
@@ -88,6 +94,7 @@ body {
 }
 
 .container .main .details {
+  display: none;
   height: 50%;
   width: 100%;
 }
@@ -98,6 +105,43 @@ body {
   line-height: 1.5;
   color: white;
   font-weight: 500;
+}
+
+.container .main .hourly {
+  height: 100%;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.container .main .hourly div {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 15%;
+          flex: 0 0 15%;
+  text-align: center;
+}
+
+.container .main .hourly h5 {
+  font-size: 1rem;
+  line-height: 1;
+  margin: 0;
+}
+
+.container .main .hourly img {
+  height: 50px;
+  display: block;
+  margin: 0 auto;
+}
+
+.container .main .hourly h3 {
+  line-height: 1;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.container .main .hourly p {
+  line-height: 1;
+  margin: 0;
+  font-size: 1rem;
 }
 
 .current {

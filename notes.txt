@@ -1,0 +1,13 @@
+dt: 1626602400
+temp: Object { day: 22.46, min: 15.79, max: 24.62, … }
+    day: 22.46   ​​
+    eve: 22.4​​
+    max: 24.62
+    min: 15.79
+    morn: 16.25    ​​
+    night: 16.17
+weather: Array [ {…} ]
+​​    Object { id: 501, main: "Rain", description: "умерена киша", … }
+​​        description: "умерена киша"
+        icon: "10d"
+​​​
