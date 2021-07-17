@@ -3,10 +3,6 @@
   padding: 0;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
 }
 
 body {
@@ -16,6 +12,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   height: 100vh;
+  padding: 5vh 0;
   font-size: 16px;
   line-height: 1;
 }
@@ -25,6 +22,26 @@ body {
   min-width: 360px;
   border: 1px solid #ddd;
   margin: 0 auto;
+  height: 90vh;
+}
+
+.container nav {
+  top: 0;
+}
+
+.container header input {
+  width: 80%;
+  font-size: 2.5rem;
+  padding: 5px;
+  margin-bottom: 10px;
+  outline: none;
+  border: none;
+  background-color: rgba(128, 128, 128, 0.2);
+  text-align: center;
+  color: white;
+  text-shadow: 0 0 3px black;
+  border-radius: 5px;
+  border-bottom: 4px solid lightgray;
 }
 
 .current {
@@ -43,22 +60,6 @@ body {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  height: 50vh;
-}
-
-.current input {
-  width: 80%;
-  font-size: 2.5rem;
-  padding: 5px;
-  margin-bottom: 10px;
-  outline: none;
-  border: none;
-  background-color: rgba(128, 128, 128, 0.2);
-  text-align: center;
-  color: white;
-  text-shadow: 0 0 3px black;
-  border-radius: 5px;
-  border-bottom: 4px solid lightgray;
 }
 
 .current h2 {
