@@ -2,6 +2,7 @@
 let city = document.getElementById("citySearch");
 let singleResult = document.querySelector(".singleResult");
 let btnToDay = document.getElementById("btnToDay");
+let btnHourly = document.getElementById("btnHourly");
 let currentResult = [];
 let hourlyWeeklyResult = [];
 // let urlWeatherCurrent = `https://api.openweathermap.org/data/2.5/weather?q={city name}&appid=92fe8ed71d6c96ecf7fa577cadb248f5`;
@@ -10,6 +11,7 @@ let hourlyWeeklyResult = [];
 let urlWeatherOneCall = `https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&appid=92fe8ed71d6c96ecf7fa577cadb248f5`;
 
 btnToDay.addEventListener("click", toDayWeather);
+btnHourly.addEventListener("click", toHourlyWeather);
 city.addEventListener("keyup", autoComplite);
 city.addEventListener("focusout", findCity);
 
@@ -89,7 +91,57 @@ function displaySingleresult(data) {
 `;
   singleResult.innerHTML = text;
 
+  let dt = data["dt"];
+  // console.log(dt);
+  // let utcDate = new Date(dt * 1000);
+  // console.log(utcDate.getHours() + ":" + utcDate.getMinutes());
+
+  let unix_timestamp = dt;
+  // Create a new JavaScript Date object based on the timestamp
+  // multiplied by 1000 so that the argument is in milliseconds, not seconds.
+  let date = new Date(unix_timestamp * 1000);
+  // Hours part from the timestamp
+  let hours = date.getHours();
+  // Minutes part from the timestamp
+  let minutes = "0" + date.getMinutes();
+  // Seconds part from the timestamp
+  let seconds = "0" + date.getSeconds();
+
+  // Will display time in 10:30:23 format
+  let formattedTime =
+    hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+
+  console.log(formattedTime);
+
   let lat = data["coord"]["lat"];
   let lon = data["coord"]["lon"];
   // hourly(lat, lon);
+}
+
+function FormatTime(timeStamp) {
+  this.ts = timeStamp;
+  this.date = new Date(this.ts * 1000);
+  this.hours = this.date.getHours;
+  this.minutes = this.date.getMinutes;
+  this.hours = this.date.getHours;
+  this.hours = this.date.getHours;
+}
+
+function toHourlyWeather() {
+  let unix_timestamp = 1626512243;
+  // Create a new JavaScript Date object based on the timestamp
+  // multiplied by 1000 so that the argument is in milliseconds, not seconds.
+  var date = new Date(unix_timestamp * 1000);
+  // Hours part from the timestamp
+  var hours = date.getHours();
+  // Minutes part from the timestamp
+  var minutes = date.getMinutes();
+  // Seconds part from the timestamp
+  var seconds = date.getSeconds();
+
+  // Will display time in 10:30:23 format
+  var formattedTime =
+    hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+
+  console.log(formattedTime);
 }
