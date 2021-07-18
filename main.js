@@ -9,6 +9,7 @@ let toSingleDiv = document.querySelector(".singleResult");
 let toDetailsDiv = document.querySelector(".details");
 let toHourlyDiv = document.querySelector(".hourly");
 let toDailyDiv = document.querySelector(".daily");
+let autocompleteDiv = document.querySelector(".autocomplete");
 let myPosition = {};
 let cityName = "";
 let currentResult = [];
@@ -22,6 +23,7 @@ window.addEventListener("wheel", scrolling);
 window.onload = getMyLocation();
 btnMyLocation.addEventListener("click", getMyLocation);
 city.addEventListener("keyup", getCityWeather);
+city.addEventListener("input", autocomplete);
 
 /******************************************************
                   MOVMENT FUNCTION 
@@ -42,7 +44,51 @@ function scrolling(e) {
 function getCityWeather(e) {
   if (e.keyCode === 13) {
     toDayWeather();
+    autocompleteDiv.innerHTML = "";
   }
+}
+
+function autocomplete() {
+  if (city.value.length > 3) {
+    let url = `https://api.locationiq.com/v1/autocomplete.php?key=pk.70d9619acb05266ad971e957f023fea1&q=${city.value}&limit=10&tag=place:city,place:town,place:village`;
+    let xml = new XMLHttpRequest();
+    xml.open("GET", url);
+    xml.onreadystatechange = function () {
+      if (xml.readyState === 4 && xml.status === 200) {
+        currentResult = JSON.parse(xml.response);
+        showSolution(currentResult);
+      }
+    };
+    xml.send();
+  }
+}
+
+function showSolution(data) {
+  let country = "country";
+  let name = "name";
+  autocompleteDiv.innerHTML = "";
+  data.forEach((el) => {
+    let location = el["address"][name] + ", " + el["address"][country];
+    let div = document.createElement("div");
+    div.className = "item";
+    div.setAttribute("data-city", location);
+    div.setAttribute("data-name", el["address"][name]);
+    let p = document.createElement("p");
+    p.innerText = location;
+    div.appendChild(p);
+    autocompleteDiv.appendChild(div);
+  });
+  let solutionDiv = autocompleteDiv.querySelectorAll(".item");
+  solutionDiv.forEach((el) => {
+    el.addEventListener("click", getCity);
+  });
+}
+
+function getCity() {
+  cityName = this.getAttribute("data-name");
+  city.value = cityName;
+  currentDay(cityName);
+  autocompleteDiv.innerHTML = "";
 }
 
 /******************************************************
@@ -97,6 +143,8 @@ function displaySingleresult(data) {
   let times = new CurrentTime();
   let sunrise = utcToLocalTime(sys["sunrise"]);
   let sunset = utcToLocalTime(sys["sunset"]);
+
+  main.scrollTop = 0;
 
   text = `<h2>${temp}C&deg;<img src="http://openweathermap.org/img/wn/${data["weather"]["0"]["icon"]}@2x.png" alt=""></h2>`;
   text += `<h4><span class="day">${tempMax}C&deg;</span><span class="night">/${tempMin}C&deg;</span></h4>`;
