@@ -17,9 +17,9 @@
 
     <section class="container position-relative d-flex flex-column align-items-center justify-content-between">
         <nav class="row justify-content-between py-3 w-100">
-            <button id="btnToDay" class="btn btn-primary col-3">to day</button>
-            <button id="btnHourly" class="btn btn-success col-3">hourly</button>
-            <button id="btnDayli" class="btn btn-secondary col-3">dayly</button>
+            <a href="#current" id="btnCurrent" class="btn btn-primary col-3">Current</a>
+            <a href="#hourly" id="btnHourly" class="btn btn-success col-3">hourly</a>
+            <a href="#daily" id="btnDaily" class="btn btn-secondary col-3">daily</a>
         </nav>
         <header class="w-100 text-center py-5">
             <input id="citySearch" type="text" placeholder="Serach city"><i id="myLocation"
@@ -27,88 +27,18 @@
         </header>
         <article class="main w-100">
             <div class="current">
-                <div class="singleResult d-flex flex-column justify-content-center">
-                    <h2>31C&deg;<img src="http://openweathermap.org/img/wn/10d@2x.png" alt=""></h2>
-                    <h4><span class="day">31C&deg;</span>/<span class="night">17C&deg;</span> </h4>
-                    <p>My time: 15:12:47</p>
-                    <p>Tokio time: 22:12:47</p>
+                <div id="current" class="singleResult d-flex flex-column justify-content-center">
+
                 </div>
                 <div class="details row justify-content-between align-items-center">
-                    <ul class="col-6">
-                        <li>Feels like: 27.73C°</li>
-                        <li>Pressure: 1027hPa</li>
-                        <li>Humidity: 52%</li>
-                    </ul>
-                    <ul class="col-6">
-                        <li>Wind speed: 27.73C°</li>
-                        <li>Wind direction: 1027hPa</li>
-                        <li>Sunrise: 52%</li>
-                        <li>Sunset: 52%</li>
-                    </ul>
+
                 </div>
-                <div class="hourly row justify-content-between align-items-start">
-                    <div>
-                        <h5>01:00h</h5><img src="http://openweathermap.org/img/wn/10n.png" alt="">
-                        <h3>19C°</h3>
-                        <p>кишица</p>
-                    </div>
-                    <div>
-                        <h5>01:00h</h5><img src="http://openweathermap.org/img/wn/10n.png" alt="">
-                        <h3>19C°</h3>
-                        <p>кишица</p>
-                    </div>
-                    <div>
-                        <h5>01:00h</h5><img src="http://openweathermap.org/img/wn/10n.png" alt="">
-                        <h3>19C°</h3>
-                        <p>кишица</p>
-                    </div>
-                    <div>
-                        <h5>01:00h</h5><img src="http://openweathermap.org/img/wn/10n.png" alt="">
-                        <h3>19C°</h3>
-                        <p>кишица</p>
-                    </div>
-                    <div>
-                        <h5>01:00h</h5><img src="http://openweathermap.org/img/wn/10n.png" alt="">
-                        <h3>19C°</h3>
-                        <p>кишица</p>
-                    </div>
-                    <div>
-                        <h5>01:00h</h5><img src="http://openweathermap.org/img/wn/10n.png" alt="">
-                        <h3>19C°</h3>
-                        <p>кишица</p>
-                    </div>
-                    <div>
-                        <h5>01:00h</h5><img src="http://openweathermap.org/img/wn/10n.png" alt="">
-                        <h3>19C°</h3>
-                        <p>кишица</p>
-                    </div>
-                    <div>
-                        <h5>01:00h</h5><img src="http://openweathermap.org/img/wn/10n.png" alt="">
-                        <h3>19C°</h3>
-                        <p>кишица</p>
-                    </div>
-                    <div>
-                        <h5>01:00h</h5><img src="http://openweathermap.org/img/wn/10n.png" alt="">
-                        <h3>19C°</h3>
-                        <p>кишица</p>
-                    </div>
-                    <div>
-                        <h5>01:00h</h5><img src="http://openweathermap.org/img/wn/10n.png" alt="">
-                        <h3>19C°</h3>
-                        <p>кишица</p>
-                    </div>
-                    <div>
-                        <h5>01:00h</h5><img src="http://openweathermap.org/img/wn/10n.png" alt="">
-                        <h3>19C°</h3>
-                        <p>кишица</p>
-                    </div>
-                    <div>
-                        <h5>01:00h</h5><img src="http://openweathermap.org/img/wn/10n.png" alt="">
-                        <h3>19C°</h3>
-                        <p>кишица</p>
-                    </div>
+                <div id="hourly" class="hourly row  align-items-start">
+
                 </div>
-                <div class="dayly"></div>
+                <div id="daily" class="daily row no-gutters">
+
+                </div>
             </div>
         </article>
     </section>

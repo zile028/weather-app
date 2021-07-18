@@ -1,22 +1,14 @@
-// let urlWeatherCurrent = `https://api.openweathermap.org/data/2.5/weather?q={city name}&appid=92fe8ed71d6c96ecf7fa577cadb248f5`;
-// let urlWeatherCurrent = `https://api.openweathermap.org/data/2.5/weather?q=beograd&appid=92fe8ed71d6c96ecf7fa577cadb248f5`;
-/* 
-https://locationiq.com
-https://us1.locationiq.com/v1/reverse.php?key=pk.70d9619acb05266ad971e957f023fea1&lat=42.894453239952774&lon=20.869329696608226&format=json
-*/
-
 /******************************************************
                     SELECTORS 
 *******************************************************/
 let city = document.getElementById("citySearch");
+let main = document.querySelector(".main");
 let btnMyLocation = document.getElementById("myLocation");
 let toCurrentDiv = document.querySelector(".current");
 let toSingleDiv = document.querySelector(".singleResult");
 let toDetailsDiv = document.querySelector(".details");
 let toHourlyDiv = document.querySelector(".hourly");
-let toDaylyDiv = document.querySelector(".dayly");
-let btnToDay = document.getElementById("btnToDay");
-let btnHourly = document.getElementById("btnHourly");
+let toDailyDiv = document.querySelector(".daily");
 let myPosition = {};
 let cityName = "";
 let currentResult = [];
@@ -26,30 +18,31 @@ let hourlyWeeklyResult = [];
                     LISTENERS 
 *******************************************************/
 
+window.addEventListener("wheel", scrolling);
+window.onload = getMyLocation();
 btnMyLocation.addEventListener("click", getMyLocation);
-btnToDay.addEventListener("click", toDayWeather);
-btnHourly.addEventListener("click", toHourlyWeather);
-city.addEventListener("keyup", autoComplite);
-city.addEventListener("focusout", findCity);
+city.addEventListener("keyup", getCityWeather);
 
-function autoComplite(e) {
-  if (e.code === "Enter") {
+/******************************************************
+                  MOVMENT FUNCTION 
+*******************************************************/
+
+function scrolling(e) {
+  if (e.deltaY > 0) {
+    main.scrollTop += 100;
   } else {
+    main.scrollTop -= 100;
   }
 }
 
-function findCity() {}
+/******************************************************
+                  INPUT FUNCTION 
+*******************************************************/
 
-function toHourlyWeather(lat, lon) {
-  let url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=92fe8ed71d6c96ecf7fa577cadb248f5&units=metric&lang=sr`;
-  let xml = new XMLHttpRequest();
-  xml.open("GET", url);
-  xml.onreadystatechange = function () {
-    if (xml.readyState === 4 && xml.status === 200) {
-      hourlyWeeklyResult = JSON.parse(xml.response);
-    }
-  };
-  xml.send();
+function getCityWeather(e) {
+  if (e.keyCode === 13) {
+    toDayWeather();
+  }
 }
 
 /******************************************************
@@ -71,15 +64,14 @@ function currentDay(cityName) {
 }
 
 function fullWeather(lat, lon) {
-  let url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=92fe8ed71d6c96ecf7fa577cadb248f5&units=metric&lang=sr`;
+  let url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=92fe8ed71d6c96ecf7fa577cadb248f5&units=metric`;
   let xml = new XMLHttpRequest();
   xml.open("GET", url);
   xml.onreadystatechange = function () {
     if (xml.readyState === 4 && xml.status === 200) {
       hourlyWeeklyResult = JSON.parse(xml.response);
       hourlyWeather(hourlyWeeklyResult);
-      daylyWeather(hourlyWeeklyResult);
-      // console.log(JSON.parse(xml.response));
+      dailyWeather(hourlyWeeklyResult);
     }
   };
   xml.send();
@@ -91,8 +83,7 @@ function fullWeather(lat, lon) {
 function toDayWeather() {
   cityName = city.value;
   currentDay(cityName);
-  cityName = cityName.toLowerCase();
-  cityName = cityName.charAt(0).toUpperCase() + cityName.slice(1);
+  cityName = formatCityName(city.value);
   city.value = cityName;
 }
 
@@ -108,7 +99,7 @@ function displaySingleresult(data) {
   let sunset = utcToLocalTime(sys["sunset"]);
 
   text = `<h2>${temp}C&deg;<img src="http://openweathermap.org/img/wn/${data["weather"]["0"]["icon"]}@2x.png" alt=""></h2>`;
-  text += `<h4><span class="day">${tempMax}C&deg;</span>/<span class="night">${tempMin}C&deg;</span></h4>`;
+  text += `<h4><span class="day">${tempMax}C&deg;</span><span class="night">/${tempMin}C&deg;</span></h4>`;
   text += `<p>My time: ${times.times.myTime}h</p>`;
   text += `<p>${cityName} time: ${times.times.cityTime}h</p>`;
   toSingleDiv.innerHTML = text;
@@ -134,7 +125,7 @@ function displaySingleresult(data) {
 *******************************************************/
 function hourlyWeather(data) {
   let hourlyArray = data["hourly"];
-  let textHTML = ``;
+  let textHTML = `<div class="col-6">`;
 
   for (let i = 0; i < 24; i++) {
     let allData = {
@@ -143,43 +134,67 @@ function hourlyWeather(data) {
       desc: hourlyArray[i]["weather"][0]["description"],
       icon: `<img src="http://openweathermap.org/img/wn/${hourlyArray[i]["weather"][0]["icon"]}.png" alt="">`,
     };
-
+    if (i === 12) {
+      textHTML += `</div>`;
+      textHTML += `<div class="col-6">`;
+    }
+    textHTML += `<div class="item d-flex justify-content-start align-items-center ">`;
+    textHTML += `${allData["icon"]}`;
     textHTML += `<div>`;
     textHTML += `<h5>${allData["time"]}</h5>`;
-    textHTML += `${allData["icon"]}`;
     textHTML += `<h3>${allData["temp"]}</h3>`;
     textHTML += `<p>${allData["desc"]}</p>`;
     textHTML += `</div>`;
+    textHTML += `</div>`;
   }
-
+  textHTML += `</div>`;
   toHourlyDiv.innerHTML = textHTML;
 }
 
 /******************************************************
-                    DAYLY WEATHER
+                    DAILY WEATHER
 *******************************************************/
 
-function daylyWeather(data) {
-  let daylyArray = data["daily"];
-  let textHTML = ``;
-  console.log(daylyArray);
-  // for (let i = 0; i < 24; i++) {
-  //   let allData = {
-  //     time: utcToLocalTime(hourlyArray[i]["dt"]) + "h",
-  //     temp: Math.ceil(hourlyArray[i]["temp"]) + "C&deg;",
-  //     desc: hourlyArray[i]["weather"][0]["description"],
-  //     icon: `<img src="http://openweathermap.org/img/wn/${hourlyArray[i]["weather"][0]["icon"]}.png" alt="">`,
-  //   };
+function dailyWeather(data) {
+  let dailyArray = data["daily"];
+  let i = 0;
 
-  //   textHTML += `<div>`;
-  //   textHTML += `<h5>${allData["time"]}</h5>`;
-  //   textHTML += `${allData["icon"]}`;
-  //   textHTML += `<h3>${allData["temp"]}</h3>`;
-  //   textHTML += `<p>${allData["desc"]}</p>`;
-  //   textHTML += `</div>`;
-  // }
+  let textHTML = `<div class="row no-gutters justify-content-around">`;
+  dailyArray.shift();
+  dailyArray.forEach((day) => {
+    let allData = {
+      dName: new UTCtoLocal(day["dt"]).dayName(),
+      mornT: "Morning: " + day["temp"]["morn"] + "C&deg;",
+      dayT: "Day: " + day["temp"]["day"] + "C&deg;",
+      eveT: "Evening: " + day["temp"]["eve"] + "C&deg;",
+      nightT: "Night: " + day["temp"]["night"] + "C&deg;",
+      minT: "Min daily: " + day["temp"]["min"] + "C&deg;",
+      maxT: "Max daily: " + day["temp"]["max"] + "C&deg;",
+      desc: day["weather"][0]["description"],
+      icon: `<img src="http://openweathermap.org/img/wn/${dailyArray[i]["weather"][0]["icon"]}.png" alt="">`,
+    };
 
-  toDaylyDiv.innerHTML = textHTML;
+    textHTML += `<div class="col-12 row no-gutters align-items-center">`;
+    textHTML += `${allData["icon"]}`;
+    textHTML += `<h3>${allData["dName"]} - <span>${allData["desc"]}</span></h3>`;
+    textHTML += `</div>`;
+    textHTML += `<ul class="col-md-3">`;
+    textHTML += `<li>${allData["mornT"]}</li>`;
+    textHTML += `<li>${allData["dayT"]}</li>`;
+    textHTML += `</ul>`;
+    textHTML += `<ul class="col-md-3">`;
+    textHTML += `<li>${allData["eveT"]}</li>`;
+    textHTML += `<li>${allData["nightT"]}</li>`;
+    textHTML += `</ul>`;
+    textHTML += `</ul>`;
+    textHTML += `<ul class="col-md-3">`;
+    textHTML += `<li>${allData["minT"]}</li>`;
+    textHTML += `<li>${allData["maxT"]}</li>`;
+    textHTML += `</ul>`;
+  });
+  textHTML += `</div>`;
+
+  toDailyDiv.innerHTML = textHTML;
 }
 
 /******************************************************
@@ -204,8 +219,10 @@ function showPosition(position) {
   xml.onreadystatechange = function () {
     if (xml.readyState === 4 && xml.status === 200) {
       currentResult = JSON.parse(xml.response);
+      cityName = currentResult["name"];
       displaySingleresult(currentResult);
-      city.value = currentResult["name"];
+      fullWeather(currentResult["coord"]["lat"], currentResult["coord"]["lon"]);
+      city.value = cityName;
     }
   };
   xml.send();
@@ -214,7 +231,17 @@ function showPosition(position) {
 /******************************************************
               FUNCTION FOR FORMATING DATA
 *******************************************************/
+function formatCityName(name) {
+  let newName = "";
+  let arrName = name.split(" ");
+  arrName.forEach((word) => {
+    word.toLowerCase();
+    word = word.charAt(0).toUpperCase() + word.slice(1);
+    newName += word + " ";
+  });
 
+  return newName.trim();
+}
 function utcToLocalTime(ts) {
   let date = new Date(ts * 1000);
   let hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
@@ -222,6 +249,38 @@ function utcToLocalTime(ts) {
     date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
   let formattedTime = hours + ":" + minutes;
   return formattedTime;
+}
+
+function UTCtoLocal(ts) {
+  this.date = new Date(ts * 1000);
+  this.formatTime = function () {
+    if (this.date.getHours() + this.diference < 10) {
+      this.hours = "0" + this.date.getHours();
+    } else {
+      this.hours = this.date.getHours();
+    }
+    if (this.date.getMinutes() < 10) {
+      this.minutes = "0" + this.date.getMinutes();
+    } else {
+      this.minutes = this.date.getMinutes();
+    }
+  };
+  this.formatTime();
+  this.times = this.hours + ":" + this.minutes;
+  this.dayNum = this.date.getDay();
+  this.dayName = function () {
+    let dayNames = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    return dayNames[this.dayNum];
+  };
+  this.dayDate = this.date.getDate();
 }
 
 function CurrentTime() {

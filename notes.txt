@@ -1,13 +1,21 @@
-dt: 1626602400
-temp: Object { day: 22.46, min: 15.79, max: 24.62, … }
-    day: 22.46   ​​
-    eve: 22.4​​
-    max: 24.62
-    min: 15.79
-    morn: 16.25    ​​
-    night: 16.17
-weather: Array [ {…} ]
-​​    Object { id: 501, main: "Rain", description: "умерена киша", … }
-​​        description: "умерена киша"
-        icon: "10d"
-​​​
+ else if (city.value.length > 2) {
+    let url = `https://api.locationiq.com/v1/autocomplete.php?key=pk.70d9619acb05266ad971e957f023fea1&q=${city.value}&limit=10`;
+    let xml = new XMLHttpRequest();
+    xml.open("GET", url);
+    xml.onreadystatechange = function () {
+      if (xml.readyState === 4 && xml.status === 200) {
+        currentResult = JSON.parse(xml.response);
+        console.log(currentResult);
+        console.log(currentResult[0]["display_place"]);
+        console.log(currentResult[0]["display_name"]);
+      }
+    };
+    xml.send();
+  }
+
+  // let urlWeatherCurrent = `https://api.openweathermap.org/data/2.5/weather?q={city name}&appid=92fe8ed71d6c96ecf7fa577cadb248f5`;
+// let urlWeatherCurrent = `https://api.openweathermap.org/data/2.5/weather?q=beograd&appid=92fe8ed71d6c96ecf7fa577cadb248f5`;
+/* 
+https://locationiq.com
+https://us1.locationiq.com/v1/reverse.php?key=pk.70d9619acb05266ad971e957f023fea1&lat=42.894453239952774&lon=20.869329696608226&format=json
+*/
